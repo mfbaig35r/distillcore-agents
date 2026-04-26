@@ -36,6 +36,17 @@ def _serialize_event(msg_type: str, run_id: str, **kwargs: Any) -> str:
     return json.dumps({"type": msg_type, "id": run_id, **kwargs})
 
 
+def _validate_api_key(key: str) -> bool:
+    """Check the client-provided API key against the server's expected key.
+
+    If DISTILLCORE_API_KEY is not set, authentication is disabled (any key accepted).
+    """
+    expected = os.environ.get("DISTILLCORE_API_KEY", "")
+    if not expected:
+        return True
+    return key == expected
+
+
 @app.websocket("/ws/agent")
 async def agent_websocket(ws: WebSocket) -> None:
     """WebSocket endpoint for real-time agent pipeline execution."""
@@ -48,9 +59,36 @@ async def agent_websocket(ws: WebSocket) -> None:
     openai_api_key = os.environ.get("OPENAI_API_KEY", "")
 
     try:
+        # --- First-message authentication ---
+        pending_msg: dict | None = None
+
+        raw = await ws.receive_text()
+        first = json.loads(raw)
+
+        if first.get("type") == "auth":
+            if _validate_api_key(first.get("api_key", "")):
+                await ws.send_text(json.dumps({"type": "auth_ok"}))
+                logger.info("WebSocket authenticated")
+            else:
+                await ws.send_text(json.dumps({"type": "auth_failed", "error": "Invalid API key"}))
+                await ws.close(code=4001, reason="Authentication failed")
+                return
+        else:
+            # No auth message — only allow if no server key is configured
+            if not _validate_api_key(""):
+                await ws.send_text(json.dumps({"type": "auth_failed", "error": "Authentication required"}))
+                await ws.close(code=4001, reason="Authentication required")
+                return
+            pending_msg = first  # process this message in the loop
+
         while True:
-            raw = await ws.receive_text()
-            msg = json.loads(raw)
+            if pending_msg is not None:
+                msg = pending_msg
+                pending_msg = None
+            else:
+                raw = await ws.receive_text()
+                msg = json.loads(raw)
+
             msg_type = msg.get("type")
 
             if msg_type == "ping":
