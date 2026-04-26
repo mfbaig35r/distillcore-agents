@@ -35,7 +35,11 @@ Repository = "https://github.com/mfbaig35r/distillcore-agents"
 [project.optional-dependencies]
 pdf = ["distillcore[pdf]"]
 all = ["distillcore[all]"]
+serve = ["fastapi>=0.115.0", "uvicorn[standard]>=0.34.0"]
 dev = ["pytest>=8.0", "pytest-asyncio>=0.24", "ruff>=0.8", "mypy>=1.0"]
+
+[project.scripts]
+distillcore-agents = "distillcore_agents.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/distillcore_agents"]
