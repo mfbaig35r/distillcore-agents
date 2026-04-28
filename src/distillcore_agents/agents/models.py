@@ -15,6 +15,8 @@ class TriageDecision(BaseModel):
     needs_ocr: bool = False
     target_tokens: int = 500
     overlap_chars: int = 200
+    chunk_strategy: str = "auto"
+    min_tokens: int = 0
     enable_enrichment: bool = True
     llm_page_window_size: int = 15
     reasoning: str = ""

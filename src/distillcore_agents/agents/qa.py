@@ -27,7 +27,8 @@ llm_page_window_size with more overlap.
    - Low chunking coverage -> recommend reducing target_tokens (smaller chunks \
 capture more text).
    - Low end-to-end coverage -> recommend reprocessing with adjusted params.
-   - Empty chunks -> recommend reducing target_tokens.
+   - Empty chunks -> recommend setting min_tokens=50 to merge tiny chunks, \
+and/or reducing target_tokens.
    - Missing topics -> recommend enabling enrichment.
 5. Be specific in recommendations — name the parameter and suggested value."""
 

@@ -54,7 +54,8 @@ class AgentResultStore:
             cursor = self._conn.execute(
                 """INSERT INTO agent_runs (
                     session_id, batch_id, source,
-                    triage_preset, triage_needs_ocr, triage_target_tokens, triage_reasoning,
+                    triage_preset, triage_needs_ocr, triage_target_tokens,
+                    triage_chunk_strategy, triage_min_tokens, triage_reasoning,
                     document_type, document_title, page_count, section_count,
                     chunk_count, document_id,
                     structuring_coverage, chunking_coverage, end_to_end_coverage,
@@ -65,7 +66,8 @@ class AgentResultStore:
                     trace_json
                 ) VALUES (
                     ?, ?, ?,
-                    ?, ?, ?, ?,
+                    ?, ?, ?,
+                    ?, ?, ?,
                     ?, ?, ?, ?,
                     ?, ?,
                     ?, ?, ?,
@@ -82,6 +84,8 @@ class AgentResultStore:
                     triage.preset,
                     int(triage.needs_ocr),
                     triage.target_tokens,
+                    triage.chunk_strategy,
+                    triage.min_tokens,
                     triage.reasoning,
                     proc.document_type,
                     proc.document_title,

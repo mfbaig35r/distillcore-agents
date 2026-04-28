@@ -24,7 +24,16 @@ document is likely scanned — set needs_ocr=True.
 5. For documents >30 pages, increase target_tokens to 800 and \
 llm_page_window_size to 20.
 6. For short documents (<5 pages), decrease target_tokens to 300.
-7. Always return a complete TriageDecision with your reasoning."""
+7. Always return a complete TriageDecision with your reasoning.
+8. Chunking strategy:
+   - "paragraph" for documents with clear paragraph breaks (reports, briefs).
+   - "sentence" for dense text without paragraph breaks (OCR output, old PDFs).
+   - "fixed" for code, logs, or data where consistent window size matters.
+   - "llm" only for high-value documents where semantic coherence is critical \
+(costs an extra LLM call per document).
+   - "auto" (default) when unsure — lets the pipeline decide.
+9. Set min_tokens to 50 for documents where small/empty chunks are likely \
+(scanned documents, tables with sparse text). Otherwise leave at 0."""
 
 
 async def _preview_document(
@@ -38,7 +47,7 @@ async def _preview_document(
     Args:
         source: Path to the document file.
     """
-    extraction = ctx.deps.extract_document(source)
+    extraction = await ctx.deps.extract_document_async(source)
     first_page = extraction.pages[0].text if extraction.pages else ""
     avg_chars = (
         sum(len(p.text) for p in extraction.pages) / len(extraction.pages)

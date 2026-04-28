@@ -9,6 +9,8 @@ CREATE TABLE IF NOT EXISTS agent_runs (
     triage_preset           TEXT,
     triage_needs_ocr        INTEGER DEFAULT 0,
     triage_target_tokens    INTEGER,
+    triage_chunk_strategy   TEXT DEFAULT 'auto',
+    triage_min_tokens       INTEGER DEFAULT 0,
     triage_reasoning        TEXT,
 
     -- Processing

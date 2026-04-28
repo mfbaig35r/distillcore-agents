@@ -151,7 +151,9 @@ class Orchestrator:
             f"overlap_chars={triage.overlap_chars}, "
             f"needs_ocr={triage.needs_ocr}, "
             f"enable_enrichment={triage.enable_enrichment}, "
-            f"llm_page_window_size={triage.llm_page_window_size}"
+            f"llm_page_window_size={triage.llm_page_window_size}, "
+            f"strategy={triage.chunk_strategy}, "
+            f"min_tokens={triage.min_tokens}"
         )
         proc_result = await self._processing_agent.run(
             processing_prompt, deps=self._client
@@ -227,7 +229,9 @@ class Orchestrator:
         processing_prompt = (
             f"Process document: {source_str}\n"
             f"Triage config: preset={triage.preset}, "
-            f"target_tokens={triage.target_tokens}"
+            f"target_tokens={triage.target_tokens}, "
+            f"strategy={triage.chunk_strategy}, "
+            f"min_tokens={triage.min_tokens}"
         )
         processing: ProcessingDecision | None = None
         async for event, output in iter_agent_events(

@@ -6,6 +6,7 @@ Manages a Store instance for persistence and search.
 
 from __future__ import annotations
 
+import asyncio
 from pathlib import Path
 from typing import Any
 
@@ -17,11 +18,12 @@ from distillcore import (
     Store,
     compute_coverage,
     extract,
+    load_preset,
+    openai_embedder,
     process_document_async,
     process_text_async,
 )
-from distillcore.embedding import openai_embedder
-from distillcore.presets import list_presets, load_preset
+from distillcore.presets import list_presets
 
 
 class DistillcoreClient:
@@ -62,6 +64,12 @@ class DistillcoreClient:
     ) -> ExtractionResult:
         """Extract text from a document file."""
         return extract(source, format=format)
+
+    async def extract_document_async(
+        self, source: str | Path, *, format: str | None = None
+    ) -> ExtractionResult:
+        """Extract text from a document file without blocking the event loop."""
+        return await asyncio.to_thread(extract, source, format=format)
 
     # -- Presets --
 

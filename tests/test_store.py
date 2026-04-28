@@ -29,6 +29,8 @@ def sample_result() -> PipelineResult:
             preset="legal",
             needs_ocr=True,
             target_tokens=800,
+            chunk_strategy="sentence",
+            min_tokens=50,
             reasoning="Contains case numbers",
         ),
         processing=ProcessingDecision(
@@ -83,6 +85,8 @@ class TestGet:
         assert row is not None
         assert row["source"] == "/tmp/test.pdf"
         assert row["triage_preset"] == "legal"
+        assert row["triage_chunk_strategy"] == "sentence"
+        assert row["triage_min_tokens"] == 50
         assert row["document_type"] == "motion"
         assert row["qa_verified"] == 1
 

@@ -16,6 +16,17 @@ class TestTriageDecision:
         assert t.preset == "generic"
         assert t.needs_ocr is False
         assert t.target_tokens == 500
+        assert t.chunk_strategy == "auto"
+        assert t.min_tokens == 0
+
+    def test_chunk_strategy(self) -> None:
+        t = TriageDecision(
+            source_filename="scan.pdf",
+            chunk_strategy="sentence",
+            min_tokens=50,
+        )
+        assert t.chunk_strategy == "sentence"
+        assert t.min_tokens == 50
 
     def test_legal_preset(self) -> None:
         t = TriageDecision(

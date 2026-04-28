@@ -36,6 +36,16 @@ class TestClientMethods:
             assert result.format == "txt"
 
     @pytest.mark.asyncio
+    async def test_extract_document_async(self, tmp_path: Path) -> None:
+        f = tmp_path / "test.txt"
+        f.write_text("Hello world")
+        client = DistillcoreClient(store_path=tmp_path / "test.db")
+        async with client:
+            result = await client.extract_document_async(f)
+            assert result.full_text == "Hello world"
+            assert result.format == "txt"
+
+    @pytest.mark.asyncio
     async def test_list_presets(self, tmp_path: Path) -> None:
         client = DistillcoreClient(store_path=tmp_path / "test.db")
         async with client:

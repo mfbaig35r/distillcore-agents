@@ -612,25 +612,28 @@ wheels = [
 
 [[package]]
 name = "distillcore"
-version = "0.4.0"
+version = "0.7.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "openai" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/53/e4/11e35ee63beef8d073849f1dc26601d419760dee810900cb7ad07f300b60/distillcore-0.4.0.tar.gz", hash = "sha256:1089d74d7c196ece1781169920a287042896e39f80336afef3ed45ff321a0601", size = 224294, upload-time = "2026-04-23T06:59:21.657Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/0e/498fac9ef17a2808999087295d2fbcd5120b50af52865482993c3b2edd25/distillcore-0.7.0.tar.gz", hash = "sha256:bc28c6a516f45894b50689b85e182db4648c604a7160a791a383e304cd5d8a9d", size = 241878, upload-time = "2026-04-27T19:30:48.659Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/58/bddb28e9bf282d7ab98232b7f8130a320d5380c14e433f12f892e247cd78/distillcore-0.4.0-py3-none-any.whl", hash = "sha256:4d87b426191aa517be4620c3997a046e58955885a7622166a2adf5120e608de0", size = 52638, upload-time = "2026-04-23T06:59:20.068Z" },
+    { url = "https://files.pythonhosted.org/packages/c8/fb/2ec9763979d49fb95359d216d3afa4e2b884299e1de0bb8877288bb2232b/distillcore-0.7.0-py3-none-any.whl", hash = "sha256:869a157651310f30fbc77726e0e24c1d32912d40edca386f2768703374801e60", size = 59857, upload-time = "2026-04-27T19:30:46.778Z" },
 ]
 
 [package.optional-dependencies]
 all = [
     { name = "beautifulsoup4" },
     { name = "lxml" },
+    { name = "openai" },
     { name = "pdf2image" },
     { name = "pdfplumber" },
     { name = "pillow" },
     { name = "python-docx" },
+]
+openai = [
+    { name = "openai" },
 ]
 pdf = [
     { name = "pdf2image" },
@@ -643,7 +646,7 @@ name = "distillcore-agents"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "distillcore" },
+    { name = "distillcore", extra = ["openai"] },
     { name = "pydantic" },
     { name = "pydantic-ai" },
 ]
@@ -668,8 +671,8 @@ serve = [
 
 [package.metadata]
 requires-dist = [
-    { name = "distillcore", specifier = ">=0.4.0" },
     { name = "distillcore", extras = ["all"], marker = "extra == 'all'" },
+    { name = "distillcore", extras = ["openai"], specifier = ">=0.7.0" },
     { name = "distillcore", extras = ["pdf"], marker = "extra == 'pdf'" },
     { name = "fastapi", marker = "extra == 'serve'", specifier = ">=0.115.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0" },

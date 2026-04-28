@@ -30,6 +30,8 @@ async def _process_document(
     enable_ocr: bool = True,
     enable_enrichment: bool = True,
     llm_page_window_size: int = 15,
+    strategy: str = "auto",
+    min_tokens: int = 0,
 ) -> str:
     """Run the full distillcore processing pipeline on a document.
 
@@ -44,13 +46,20 @@ async def _process_document(
         enable_ocr: Whether to use OCR for scanned pages.
         enable_enrichment: Whether to enrich chunks with topics/concepts.
         llm_page_window_size: Pages per LLM window for large documents.
+        strategy: Chunking strategy ("auto", "paragraph", "sentence", "fixed", "llm").
+        min_tokens: Merge chunks below this token count into neighbors (0 = disabled).
     """
     from distillcore import ChunkConfig, DistillConfig
 
     domain = ctx.deps.load_preset(preset)
     config = DistillConfig(
         domain=domain,
-        chunk=ChunkConfig(target_tokens=target_tokens, overlap_chars=overlap_chars),
+        chunk=ChunkConfig(
+            target_tokens=target_tokens,
+            overlap_chars=overlap_chars,
+            strategy=strategy,
+            min_tokens=min_tokens,
+        ),
         enable_ocr=enable_ocr,
         enrich_chunks=enable_enrichment,
         llm_page_window_size=llm_page_window_size,
