@@ -21,7 +21,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="distillcore-agents", version="0.1.0")
+app = FastAPI(title="distillcore-agents", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,7 +76,8 @@ async def agent_websocket(ws: WebSocket) -> None:
         else:
             # No auth message — only allow if no server key is configured
             if not _validate_api_key(""):
-                await ws.send_text(json.dumps({"type": "auth_failed", "error": "Authentication required"}))
+                msg = json.dumps({"type": "auth_failed", "error": "Authentication required"})
+                await ws.send_text(msg)
                 await ws.close(code=4001, reason="Authentication required")
                 return
             pending_msg = first  # process this message in the loop
